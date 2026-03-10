@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,10 +14,12 @@ import java.time.LocalDateTime;
 @Builder
 
 public class ProductResponse {
-    private String name;
-    private String sellPrice;
-    private String purchasePrice;
+    private String productName;
+    private BigDecimal sellPrice;
+    private BigDecimal purchasePrice;
     private String description;
     private Integer stock;
+    private String category;
+    private String id;
     private LocalDateTime createAt;
 }

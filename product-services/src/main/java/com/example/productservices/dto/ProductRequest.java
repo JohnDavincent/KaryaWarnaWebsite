@@ -13,9 +13,11 @@ import java.math.BigDecimal;
 @Builder
 
 public class ProductRequest {
-    private String id;
-    private String name;
+    private String productName;
     private String description;
     private BigDecimal purchasePrice;
+    private Integer stock;
     private BigDecimal sellPrice;
+    private String id;
+    private String category;
 }

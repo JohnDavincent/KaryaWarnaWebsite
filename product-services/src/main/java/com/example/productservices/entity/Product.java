@@ -25,7 +25,7 @@ public class Product {
     private String id;
 
     @Column(name = "name", nullable = false)
-    private String name;
+    private String productName;
 
     @Column(name = "description")
     private String description;
@@ -43,6 +43,10 @@ public class Product {
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
+    @ManyToOne
+    @JoinColumn(name = "productCategory_id")
+    private ProductCategory productCategory;
+
     @CreationTimestamp
     @Column(name = "create_at", updatable = false)
     private LocalDateTime createAt;
@@ -54,5 +58,5 @@ public class Product {
     @LastModifiedBy
     private String lastModifiedBy;
 
-
 }
+
