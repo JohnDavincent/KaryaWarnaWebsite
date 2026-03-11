@@ -37,7 +37,6 @@ public class ProductServiceImp implements ProductService{
         return productMapper.mapToProductResponse(createProduct,category);
     }
 
-
     private String generateProductId(ProductCategory category) {
         int next = category.getCurrentSeq() + 1;
         category.setCurrentSeq(next);
