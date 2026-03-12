@@ -7,6 +7,7 @@ import com.example.productservices.exception.ProductExistException;
 import com.example.productservices.repository.ProductCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,8 +19,11 @@ public class ProductCategoryServiceImp implements ProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
     @Override
     public CategoryResponse createCategory(CategoryRequest request) {
-        if(productCategoryRepository.existsByCategoryAndPrefixInCategory(request.getCategoryName(),request.getPrefix())){
-            throw new ProductExistException("Category already exist");
+        if(productCategoryRepository.existsByCategory(request.getCategoryName())){
+            throw new DataIntegrityViolationException("Category already exists");
+        }
+        if(productCategoryRepository.existsByPrefix(request.getPrefix())){
+            throw new DataIntegrityViolationException("Prefix already exists");
         }
 
         ProductCategory createCategory = ProductCategory.builder()

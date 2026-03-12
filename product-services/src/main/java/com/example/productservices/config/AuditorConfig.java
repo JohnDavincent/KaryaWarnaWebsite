@@ -19,35 +19,36 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Configuration
-@EnableJpaAuditing(auditorAwareRef = "auditoraware")
-public class AuditorConfig implements AuditorAware<String> {
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+public class AuditorConfig{
 
     @Value("${jwt.secret.key}")
-    private String SECRET_KEY;
+    private String secretKey;
 
-    private Key key;
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        // Menggunakan Lambda Expression (Sangat Modern & Elegan!)
+        return () -> {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                HttpServletRequest request = attributes.getRequest();
+                Cookie[] cookies = request.getCookies();
 
-    @Override
-    public Optional<String> getCurrentAuditor() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if(attributes != null){
-            HttpServletRequest request = attributes.getRequest();
-            Cookie[] cookies = request.getCookies();
-
-            if(cookies != null){
-                return Arrays.stream(cookies)
-                        .filter(cookie -> "jwt".equals(cookie.getName()))
-                        .findFirst()
-                        .map(cookie -> getUsernameFromToken(cookie.getValue()));
+                if (cookies != null) {
+                    return Arrays.stream(cookies)
+                            .filter(cookie -> "jwt".equals(cookie.getName()))
+                            .findFirst()
+                            .map(cookie -> getUsernameFromToken(cookie.getValue()));
+                }
             }
-        }
-        return Optional.of("SYSTEM");
+            return Optional.of("SYSTEM");
+        };
     }
 
     public String getUsernameFromToken(String token){
         try{
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY.getBytes())
+                    .setSigningKey(secretKey.getBytes())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();

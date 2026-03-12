@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {
     Optional<ProductCategory> findByCategory(String category);
+    boolean existsByCategory(String category);
+    boolean existsByPrefix(String prefix);
 
-    @Query(value = "SELECT EXISTS(SELECT 1 FROM product_category pc WHERE pc.category = :category AND pc.prefix = :prefix)", nativeQuery = true)
-    boolean existsByCategoryAndPrefixInCategory(@Param("category") String category, @Param("prefix") String prefix);
 
 }
