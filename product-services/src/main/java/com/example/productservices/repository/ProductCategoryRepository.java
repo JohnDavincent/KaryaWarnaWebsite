@@ -9,7 +9,9 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {
-    Optional<ProductCategory> findByCategory(String category);
+    @Query("SELECT c FROM ProductCategory c WHERE c.category = :categoryName")
+    Optional<ProductCategory> findByCategory(@Param("categoryName")String categoryName);
+
     boolean existsByCategory(String category);
     boolean existsByPrefix(String prefix);
 

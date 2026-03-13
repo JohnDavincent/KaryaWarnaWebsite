@@ -1,4 +1,4 @@
-package com.example.productservices.exception;
+package com.example.common.exception;
 
 public class ProductExistException extends RuntimeException {
     public ProductExistException(String message) {

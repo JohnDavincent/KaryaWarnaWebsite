@@ -18,6 +18,6 @@ public class ProductRequest {
     private BigDecimal purchasePrice;
     private Integer stock;
     private BigDecimal sellPrice;
-    private String id;
+    private String supplier;
     private String category;
 }

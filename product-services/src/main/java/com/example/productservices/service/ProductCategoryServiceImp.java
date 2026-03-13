@@ -3,7 +3,7 @@ package com.example.productservices.service;
 import com.example.productservices.dto.CategoryRequest;
 import com.example.productservices.dto.CategoryResponse;
 import com.example.productservices.entity.ProductCategory;
-import com.example.productservices.exception.ProductExistException;
+import com.example.common.exception.ProductExistException;
 import com.example.productservices.repository.ProductCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,8 @@ public class ProductCategoryServiceImp implements ProductCategoryService {
                 .productList(new ArrayList<>())
                 .currentSeq(0)
                 .build();
+
+        productCategoryRepository.save(createCategory);
 
         return CategoryResponse.builder()
                 .categoryName(createCategory.getCategory())

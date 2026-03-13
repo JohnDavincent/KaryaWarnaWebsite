@@ -28,7 +28,7 @@ public class FeignAuthInterceptor implements RequestInterceptor {
                     .findFirst()
                     .ifPresent(jwtCookie -> {
                         String jwtToken = jwtCookie.getValue();
-                        requestTemplate.header("Authorization","Bearer " + jwtToken);
+                        requestTemplate.header(JWT_TOKEN, jwtCookie.getName() +"="+ jwtToken);
                     });
         }
     }

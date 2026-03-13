@@ -16,13 +16,29 @@ import java.util.List;
 @Entity
 @Table(name = "supplier")
 public class Supplier {
+
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "contactPerson", nullable = false)
+    private String contactName;
+
+    @Column(name = "phone", nullable = false)
+    private String phoneNumber;
+
+    @Column(name = "Description", nullable = true)
+    private String desc;
+
     @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
     private List<Product> productList = new ArrayList<>();
+
+    public void addProductToList(Product product){
+        productList.add(product);
+        product.setSupplier(this);
+    }
 }
 

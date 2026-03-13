@@ -28,4 +28,10 @@ public class ProductCategory {
 
     @Column(name = "sequence")
     private Integer currentSeq;
+
+    public void addProductToList(Product product){
+        productList.add(product);
+        product.setProductCategory(this);
+    }
+
 }

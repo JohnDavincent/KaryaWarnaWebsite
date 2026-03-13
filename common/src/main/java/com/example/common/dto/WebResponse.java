@@ -1,12 +1,10 @@
 package com.example.common.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
 
+import lombok.Builder;
 import java.io.Serializable;
 
-
+@Builder
 public record WebResponse <T>(
     Integer status,
     String message,

@@ -1,4 +1,5 @@
-package com.example.productservices.exception;
+package com.example.common.exception;
+
 
 public class CategoryExistException extends RuntimeException {
     public CategoryExistException(String message) {
