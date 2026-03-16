@@ -14,8 +14,12 @@ import com.example.productservices.mapper.ProductMapper;
 import com.example.productservices.repository.ProductCategoryRepository;
 import com.example.productservices.repository.ProductRepository;
 import com.example.productservices.repository.SupplierRepository;
+import com.example.productservices.spesification.ProductSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -64,18 +68,18 @@ public class ProductServiceImp implements ProductService{
     };
 
     @Override
-    public ProductResponse searchProduct(SearchProductRequest searchReq) {
-        if(searchReq != null){
-            if(searchReq.getProductName() != null){
-                Product findProduct = productRepository.findByProductName(searchReq.getProductName()).orElseThrow(() -> new ProductNotExistException("Product with " + searchReq.getProductName() + "Not Found"));
-                return productMapper.mapToProductResponse(findProduct);
-            }else if(searchReq.getId() != null){
-                Product findProduct = productRepository.findById(searchReq.getId()).orElseThrow(() -> new ProductNotExistException("Product with " + searchReq.getProductName() + "Not Found"));
-                return productMapper.mapToProductResponse(findProduct);
-            }
-        }
+    public Page<Product> searchProduct(String name, Long category, Long supplier, int maxStock, int minStock, Pageable pageable) {
+        Specification<Product> specification = Specification
+                .where(ProductSpecification.hasNameLike(name))
+                .and(ProductSpecification.filterByCategory(category))
+                .and(ProductSpecification.filterBySupplier(supplier))
+                .and(ProductSpecification.filterByStock(minStock,maxStock));
 
+        return productRepository.findAll(specification, pageable);
     }
+
+
+
 
 
 
