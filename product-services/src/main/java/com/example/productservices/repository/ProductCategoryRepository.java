@@ -1,11 +1,13 @@
 package com.example.productservices.repository;
 
+import com.example.productservices.entity.Product;
 import com.example.productservices.entity.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {
@@ -14,6 +16,5 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
 
     boolean existsByCategory(String category);
     boolean existsByPrefix(String prefix);
-
 
 }

@@ -1,13 +1,11 @@
 package com.example.common.handler;
 
 import com.example.common.dto.WebResponse;
-import com.example.common.exception.CategoryExistException;
-import com.example.common.exception.CategoryNotExistException;
-import com.example.common.exception.ProductExistException;
-import com.example.common.exception.SupplierExistException;
+import com.example.common.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,53 +14,75 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductExistException.class)
-    public WebResponse<ProductExistException> handleProductExist(ProductExistException e){
+    public ResponseEntity<WebResponse<ProductExistException>> handleProductExist(ProductExistException e){
         log.error("Product already exist in database : {} ",e.getMessage());
-        return WebResponse.<ProductExistException>builder()
-                .status(HttpStatus.CONFLICT.value())
-                .message(e.getMessage())
-                .code("CONFLICT")
-                .build();
+        WebResponse<ProductExistException> response = WebResponse.<ProductExistException>builder()
+                    .status(HttpStatus.CONFLICT.value())
+                    .message(e.getMessage())
+                    .code("CONFLICT")
+                    .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(CategoryExistException.class)
-    public WebResponse<CategoryExistException> handleCategoryExist(CategoryExistException e){
+    public ResponseEntity<WebResponse<CategoryExistException>> handleCategoryExist(CategoryExistException e){
         log.error("Category already Exist!");
-        return WebResponse.<CategoryExistException>builder()
+        WebResponse<CategoryExistException> response = WebResponse.<CategoryExistException>builder()
                 .status(HttpStatus.CONFLICT.value())
-                .code("CONFLICT")
                 .message(e.getMessage())
+                .code("CONFLICT")
                 .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public WebResponse<DataIntegrityViolationException> handleDatabaseIntegrityViolation(DataIntegrityViolationException e){
+    public ResponseEntity<WebResponse<DataIntegrityViolationException>> handleDatabaseIntegrityViolation(DataIntegrityViolationException e){
         log.error("Error data conflict : {}", e.getMessage());
-        return WebResponse. <DataIntegrityViolationException>builder()
+        WebResponse<DataIntegrityViolationException> response = WebResponse.<DataIntegrityViolationException>builder()
                 .status(HttpStatus.CONFLICT.value())
-                .code("CONFLICT")
                 .message(e.getMessage())
+                .code("CONFLICT")
                 .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(CategoryNotExistException.class)
-    public WebResponse<CategoryNotExistException> handleCategoryNotExistViolation(CategoryNotExistException e){
+    public ResponseEntity<WebResponse<CategoryNotExistException>> handleCategoryNotExistViolation(CategoryNotExistException e){
         log.error("category not found : {}",e.getMessage());
-        return WebResponse.<CategoryNotExistException>builder()
+        WebResponse<CategoryNotExistException> response = WebResponse.<CategoryNotExistException>builder()
                 .status(HttpStatus.CONFLICT.value())
-                .code("CONFLICT")
                 .message(e.getMessage())
+                .code("CONFLICT")
                 .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(SupplierExistException.class)
-    public WebResponse<SupplierExistException> handleDuplicateSupplier(SupplierExistException e){
+    public ResponseEntity<WebResponse<SupplierExistException>> handleDuplicateSupplier(SupplierExistException e){
         log.error("Supplier already exist : {} ", e.getMessage());
-        return WebResponse.<SupplierExistException>builder()
+        WebResponse<SupplierExistException> response = WebResponse.<SupplierExistException>builder()
                 .status(HttpStatus.CONFLICT.value())
-                .code("CONFLICT")
                 .message(e.getMessage())
+                .code("CONFLICT")
                 .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(ProductNotExistException.class)
+    public ResponseEntity<WebResponse<ProductNotExistException>> handleDuplicateSupplier(ProductNotExistException e){
+        log.error("Product Not found : {} ", e.getMessage());
+        WebResponse<ProductNotExistException> response = WebResponse.<ProductNotExistException>builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(e.getMessage())
+                .code("CONFLICT")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
 

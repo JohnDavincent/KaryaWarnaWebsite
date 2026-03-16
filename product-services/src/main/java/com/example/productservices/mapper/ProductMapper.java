@@ -23,7 +23,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public ProductResponse mapToProductResponse(Product product, ProductCategory productCategory){
+    public ProductResponse mapToProductResponse(Product product){
         return ProductResponse.builder()
                 .id(product.getId())
                 .productName(product.getProductName())
@@ -31,7 +31,7 @@ public class ProductMapper {
                 .sellPrice(product.getSellPrice())
                 .purchasePrice(product.getPurchasePrice())
                 .description(product.getDescription())
-                .category(productCategory.getCategory())
+                .category(product.getProductCategory().getCategory())
                 .build();
     }
 

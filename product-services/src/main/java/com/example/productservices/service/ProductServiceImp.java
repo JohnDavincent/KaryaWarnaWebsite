@@ -2,9 +2,11 @@ package com.example.productservices.service;
 
 import com.example.common.exception.CategoryNotExistException;
 import com.example.common.exception.ProductExistException;
+import com.example.common.exception.ProductNotExistException;
 import com.example.common.exception.SupplierNotExistException;
 import com.example.productservices.dto.ProductRequest;
 import com.example.productservices.dto.ProductResponse;
+import com.example.productservices.dto.SearchProductRequest;
 import com.example.productservices.entity.Product;
 import com.example.productservices.entity.ProductCategory;
 import com.example.productservices.entity.Supplier;
@@ -15,6 +17,10 @@ import com.example.productservices.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -47,7 +53,7 @@ public class ProductServiceImp implements ProductService{
         productCategoryRepository.save(category);
         supplierRepository.save(supplier);
 
-        return productMapper.mapToProductResponse(createProduct,category);
+        return productMapper.mapToProductResponse(createProduct);
     }
 
     private String generateProductId(ProductCategory category) {
@@ -56,6 +62,23 @@ public class ProductServiceImp implements ProductService{
         productCategoryRepository.save(category);
         return category.getPrefix() + "-" + String.format("%03d", next);
     };
+
+    @Override
+    public ProductResponse searchProduct(SearchProductRequest searchReq) {
+        if(searchReq != null){
+            if(searchReq.getProductName() != null){
+                Product findProduct = productRepository.findByProductName(searchReq.getProductName()).orElseThrow(() -> new ProductNotExistException("Product with " + searchReq.getProductName() + "Not Found"));
+                return productMapper.mapToProductResponse(findProduct);
+            }else if(searchReq.getId() != null){
+                Product findProduct = productRepository.findById(searchReq.getId()).orElseThrow(() -> new ProductNotExistException("Product with " + searchReq.getProductName() + "Not Found"));
+                return productMapper.mapToProductResponse(findProduct);
+            }
+        }
+
+    }
+
+
+
 
 
 
