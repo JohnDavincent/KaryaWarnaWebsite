@@ -32,6 +32,7 @@ public class ProductMapper {
                 .purchasePrice(product.getPurchasePrice())
                 .description(product.getDescription())
                 .category(product.getProductCategory().getCategory())
+                .supplier(product.getSupplier().getName())
                 .build();
     }
 

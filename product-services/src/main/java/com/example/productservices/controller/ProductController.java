@@ -2,7 +2,9 @@ package com.example.productservices.controller;
 
 import com.example.productservices.dto.ProductRequest;
 import com.example.productservices.dto.ProductResponse;
+import com.example.productservices.dto.SearchProductResult;
 import com.example.productservices.entity.Product;
+import com.example.productservices.filter.ProductFilter;
 import com.example.productservices.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,18 +28,11 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    ResponseEntity<Page<Product>> searchProduct(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Long supplierId,
-            @RequestParam(required = false) int maxStock,
-            @RequestParam(required = false) int minStock,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Product> productPage = productService.searchProduct(name,categoryId,supplierId,minStock,minStock,pageable);
+    ResponseEntity<Page<SearchProductResult>> searchProduct(@ModelAttribute ProductFilter productFilter){
+        Pageable pageable = PageRequest.of(productFilter.getPage(), productFilter.getSize());
+        Page<SearchProductResult> productPage = productService.searchProduct(productFilter, pageable);
         return ResponseEntity.ok(productPage);
     }
+
 
 }

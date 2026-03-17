@@ -66,8 +66,9 @@ public class ProductSpecification{
                return criteriaBuilder.lessThanOrEqualTo(root.get("stock"), maxStock);
             }
         });
-
     }
+
+
 
 
 

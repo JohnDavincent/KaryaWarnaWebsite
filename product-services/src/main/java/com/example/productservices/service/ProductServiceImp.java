@@ -7,14 +7,17 @@ import com.example.common.exception.SupplierNotExistException;
 import com.example.productservices.dto.ProductRequest;
 import com.example.productservices.dto.ProductResponse;
 import com.example.productservices.dto.SearchProductRequest;
+import com.example.productservices.dto.SearchProductResult;
 import com.example.productservices.entity.Product;
 import com.example.productservices.entity.ProductCategory;
 import com.example.productservices.entity.Supplier;
+import com.example.productservices.filter.ProductFilter;
 import com.example.productservices.mapper.ProductMapper;
 import com.example.productservices.repository.ProductCategoryRepository;
 import com.example.productservices.repository.ProductRepository;
 import com.example.productservices.repository.SupplierRepository;
 import com.example.productservices.spesification.ProductSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -68,25 +71,47 @@ public class ProductServiceImp implements ProductService{
     };
 
     @Override
-    public Page<Product> searchProduct(String name, Long category, Long supplier, int maxStock, int minStock, Pageable pageable) {
+    public Page<SearchProductResult> searchProduct(ProductFilter productFilter, Pageable pageable) {
         Specification<Product> specification = Specification
-                .where(ProductSpecification.hasNameLike(name))
-                .and(ProductSpecification.filterByCategory(category))
-                .and(ProductSpecification.filterBySupplier(supplier))
-                .and(ProductSpecification.filterByStock(minStock,maxStock));
+                .where(ProductSpecification.hasNameLike(productFilter.getProductName()))
+                .and(ProductSpecification.filterByCategory(productFilter.getCategoryId()))
+                .and(ProductSpecification.filterBySupplier(productFilter.getSupplierId())
+                .and(ProductSpecification.filterByStock(productFilter.getMinStock(), productFilter.getMaxStock())));
 
-        return productRepository.findAll(specification, pageable);
+        Page<Product> productData = productRepository.findAll(specification,pageable);
+        return productData.map(product ->{
+                SearchProductResult resultProduct =  SearchProductResult.builder()
+                        .productName(product.getProductName())
+                        .stock(product.getStock())
+                        .description(product.getDescription())
+                        .sellPrice(product.getSellPrice())
+                        .purchasedPrice(product.getPurchasePrice())
+                        .lastUpdate(product.getUpdateAt())
+                        .build();
+
+                if(product.getProductCategory() != null){
+                    resultProduct.setCategoryName(product.getProductCategory().getCategory());
+                }
+
+                if(product.getSupplier() != null){
+                    resultProduct.setSupplierName(product.getSupplier().getName());
+                }
+
+                return resultProduct;
+
+        });
     }
 
+    @Transactional
+    @Override
+    public ProductResponse updateProduct(String productId, ProductRequest request) {
+        if(request == null){
+            throw new RuntimeException("There is no input change");
+        }
+        Product existProduct = productRepository.findById(productId).orElseThrow(() -> new ProductNotExistException("Product Not exist"));
 
 
-
-
-
-
-
-
-
+    }
 
 
 }
