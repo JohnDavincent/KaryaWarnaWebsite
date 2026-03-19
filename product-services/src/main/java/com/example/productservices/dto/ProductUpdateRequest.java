@@ -14,16 +14,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
-public class ProductRequest {
-    @NotBlank
+public class ProductUpdateRequest {
+    @Nullable
     private String productName;
 
-    @NotNull
+    @Nullable
     @Max(100000000)
     private BigDecimal sellPrice;
 
-    @NotNull
+    @Nullable
     @Max(100000000)
     private BigDecimal purchasePrice;
 
@@ -31,17 +30,14 @@ public class ProductRequest {
     @Size(min = 5 , max = 100 )
     private String description;
 
-    @NotNull
+    @Nullable
     @Positive
     private Integer stock;
 
-    @NotBlank
-    private String category;
+    @Nullable
+    private Long categoryId;
 
-    @NotBlank
-    private String supplier;
+    @Nullable
+    private Long supplierId;
 
-    private String id;
-
-    private LocalDateTime createAt;
 }

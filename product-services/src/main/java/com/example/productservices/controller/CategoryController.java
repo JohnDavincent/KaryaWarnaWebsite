@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/karyawarna")
+@RequestMapping("/karyawarna/admin")
 @RequiredArgsConstructor
 public class CategoryController {
     private final ProductCategoryService productCategoryService;

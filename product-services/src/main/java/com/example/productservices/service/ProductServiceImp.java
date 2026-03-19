@@ -4,9 +4,9 @@ import com.example.common.exception.CategoryNotExistException;
 import com.example.common.exception.ProductExistException;
 import com.example.common.exception.ProductNotExistException;
 import com.example.common.exception.SupplierNotExistException;
-import com.example.productservices.dto.ProductRequest;
+import com.example.productservices.dto.ProductCreateRequest;
 import com.example.productservices.dto.ProductResponse;
-import com.example.productservices.dto.SearchProductRequest;
+import com.example.productservices.dto.ProductUpdateRequest;
 import com.example.productservices.dto.SearchProductResult;
 import com.example.productservices.entity.Product;
 import com.example.productservices.entity.ProductCategory;
@@ -25,10 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -39,7 +35,7 @@ public class ProductServiceImp implements ProductService{
     private final SupplierRepository supplierRepository;
     private final ProductMapper productMapper;
     @Override
-    public ProductResponse createProduct(ProductRequest request) {
+    public ProductResponse createProduct(ProductCreateRequest request) {
         if (productRepository.existsByProductName(request.getProductName())) {
             throw new ProductExistException("Product sudah ada di dalam database");
         }
@@ -104,13 +100,45 @@ public class ProductServiceImp implements ProductService{
 
     @Transactional
     @Override
-    public ProductResponse updateProduct(String productId, ProductRequest request) {
+    public ProductResponse updateProduct(String productId, ProductUpdateRequest request) {
         if(request == null){
             throw new RuntimeException("There is no input change");
         }
         Product existProduct = productRepository.findById(productId).orElseThrow(() -> new ProductNotExistException("Product Not exist"));
+        if(request.getProductName() != null){
+            existProduct.setProductName(request.getProductName());
+        }
 
+        if(request.getDescription() != null){
+            existProduct.setDescription(request.getDescription());
+        }
+        if(request.getPurchasePrice() != null){
+            existProduct.setPurchasePrice(request.getPurchasePrice());
+        }
+        if(request.getSellPrice() != null){
+            existProduct.setSellPrice(request.getSellPrice());
+        }
+        if(request.getCategoryId() != null && productCategoryRepository.existsById(request.getCategoryId())){
+            ProductCategory existCategory = productCategoryRepository.getReferenceById(request.getCategoryId());
+            existProduct.setProductCategory(existCategory);
+        }
 
+        if(request.getSupplierId() != null && supplierRepository.existsById(request.getSupplierId())){
+            Supplier existSupplier = supplierRepository.getReferenceById(request.getSupplierId());
+            existProduct.setSupplier(existSupplier);
+        }
+
+        productRepository.save(existProduct);
+        return productMapper.mapToProductResponse(existProduct);
+    }
+
+    @Override
+    public void deleteProduct(String productId) {
+        if(!productRepository.existsById(productId)){
+            throw new ProductNotExistException("Product with id : " + productId + "not exist");
+        }
+
+        productRepository.deleteById(productId);
     }
 
 

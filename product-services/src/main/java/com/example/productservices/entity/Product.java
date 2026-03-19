@@ -1,5 +1,6 @@
 package com.example.productservices.entity;
 
+import com.example.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "product")
-public class Product {
+public class Product extends BaseEntity {
     @Id
     private String id;
 
@@ -46,17 +47,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "productCategory_id")
     private ProductCategory productCategory;
-
-    @CreationTimestamp
-    @Column(name = "create_at", updatable = false)
-    private LocalDateTime createAt;
-
-    @UpdateTimestamp
-    @Column(name = "update_at")
-    private LocalDateTime updateAt;
-
-    @LastModifiedBy
-    private String lastModifiedBy;
 
 }
 
