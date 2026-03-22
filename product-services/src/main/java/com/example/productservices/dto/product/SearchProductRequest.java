@@ -1,10 +1,10 @@
 package com.example.productservices.dto.product;
 
+import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jspecify.annotations.Nullable;
 
 @Data
 @AllArgsConstructor
