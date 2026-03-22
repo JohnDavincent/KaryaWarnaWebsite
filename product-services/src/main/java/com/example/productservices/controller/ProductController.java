@@ -1,10 +1,10 @@
 package com.example.productservices.controller;
 
 import com.example.common.dto.WebResponse;
-import com.example.productservices.dto.ProductCreateRequest;
-import com.example.productservices.dto.ProductResponse;
-import com.example.productservices.dto.ProductUpdateRequest;
-import com.example.productservices.dto.SearchProductResult;
+import com.example.productservices.dto.product.ProductCreateRequest;
+import com.example.productservices.dto.product.ProductResponse;
+import com.example.productservices.dto.product.ProductUpdateRequest;
+import com.example.productservices.dto.product.SearchProductResult;
 import com.example.productservices.filter.ProductFilter;
 import com.example.productservices.service.ProductService;
 import jakarta.validation.Valid;

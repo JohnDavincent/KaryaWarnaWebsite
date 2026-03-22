@@ -85,5 +85,42 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    @ExceptionHandler(BrandAlreadyExistException.class)
+    public ResponseEntity<WebResponse<BrandAlreadyExistException>> handleDuplicateSupplier(BrandAlreadyExistException e){
+        log.error("Brand already exist : {} ", e.getMessage());
+        WebResponse<BrandAlreadyExistException> response = WebResponse.<BrandAlreadyExistException>builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(e.getMessage())
+                .code("CONFLICT")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(BrandNotExistException.class)
+    public ResponseEntity<WebResponse<BrandNotExistException>> handleDuplicateSupplier(BrandNotExistException e){
+        log.error("Brand is not exist : {} ", e.getMessage());
+        WebResponse<BrandNotExistException> response = WebResponse.<BrandNotExistException>builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(e.getMessage())
+                .code("CONFLICT")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(PrefixAlreadyExistException.class)
+    public ResponseEntity<WebResponse<PrefixAlreadyExistException>> handleDuplicateSupplier(PrefixAlreadyExistException e){
+        log.error("Prefix already exist : {} ", e.getMessage());
+        WebResponse<PrefixAlreadyExistException> response = WebResponse.<PrefixAlreadyExistException>builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(e.getMessage())
+                .code("CONFLICT")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+
 
 }

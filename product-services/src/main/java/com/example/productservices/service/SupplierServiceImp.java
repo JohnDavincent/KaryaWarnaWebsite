@@ -2,9 +2,9 @@ package com.example.productservices.service;
 
 import com.example.common.exception.SupplierExistException;
 import com.example.common.exception.SupplierNotExistException;
-import com.example.productservices.dto.SupplierCreateRequest;
-import com.example.productservices.dto.SupplierResponse;
-import com.example.productservices.dto.SupplierUpdateRequest;
+import com.example.productservices.dto.supplier.SupplierCreateRequest;
+import com.example.productservices.dto.supplier.SupplierResponse;
+import com.example.productservices.dto.supplier.SupplierUpdateRequest;
 import com.example.productservices.entity.Supplier;
 import com.example.productservices.mapper.ProductMapper;
 import com.example.productservices.repository.SupplierRepository;
@@ -21,8 +21,8 @@ public class SupplierServiceImp implements SupplierService{
 
     @Override
     public SupplierResponse addSupplier(SupplierCreateRequest request) {
-        if(supplierRepository.existsByName(request.getSupplierName())){
-            throw new SupplierExistException("Supplier dengan nama" + request.getSupplierName() + "Sudah ada");
+        if(supplierRepository.existsBySupplierName(request.getSupplierName())){
+            throw new SupplierExistException("Supplier with name " + request.getSupplierName() + "is already exist");
         }
         Supplier createSupplier = productMapper.mapToSupplier(request);
         supplierRepository.save(createSupplier);
@@ -32,13 +32,13 @@ public class SupplierServiceImp implements SupplierService{
 
     @Transactional
     @Override
-    public SupplierResponse updateSupplier(Long supplierId, SupplierUpdateRequest request) {
+    public SupplierResponse updateSupplier(String supplierCode, SupplierUpdateRequest request) {
         if(request == null){
             throw new RuntimeException("Input is invalid");
         }
-        Supplier existSupplier = supplierRepository.findById(supplierId).orElseThrow(() -> new SupplierNotExistException("Supplier with name " + request.getSupplierName() + "doesn't exist"));
+        Supplier existSupplier = supplierRepository.findBySupplierCode(supplierCode).orElseThrow(() -> new SupplierNotExistException("Supplier with name " + request.getSupplierName() + "doesn't exist"));
         if(request.getSupplierName() != null){
-            existSupplier.setName(request.getSupplierName());
+            existSupplier.setSupplierName(request.getSupplierName());
         }
 
         if(request.getContactPerson() != null){
@@ -58,10 +58,11 @@ public class SupplierServiceImp implements SupplierService{
     }
 
     @Override
-    public void deleteSupplier(Long id) {
-       if(!supplierRepository.existsById(id)){
-           throw new SupplierNotExistException("Supplier with id : " + id + "Not found");
+    public void deleteSupplier(String supplierCode) {
+       if(!supplierRepository.existsBySupplierCode(supplierCode)){
+           throw new SupplierNotExistException("Supplier with id : " + supplierCode + "Not found");
        }
-       supplierRepository.deleteById(id);
+
+       supplierRepository.deleteBySupplierCode(supplierCode);
     }
 }

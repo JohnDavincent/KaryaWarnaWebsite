@@ -1,9 +1,10 @@
 package com.example.productservices.service;
 
-import com.example.productservices.dto.CategoryRequest;
-import com.example.productservices.dto.CategoryResponse;
+import com.example.common.exception.CategoryNotExistException;
+import com.example.productservices.dto.category.CategoryRequest;
+import com.example.productservices.dto.category.CategoryResponse;
 import com.example.productservices.entity.ProductCategory;
-import com.example.common.exception.ProductExistException;
+import com.example.productservices.mapper.ProductMapper;
 import com.example.productservices.repository.ProductCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,27 +18,51 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class ProductCategoryServiceImp implements ProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
+    private final ProductMapper productMapper;
+
     @Override
     public CategoryResponse createCategory(CategoryRequest request) {
-        if(productCategoryRepository.existsByCategory(request.getCategoryName())){
+        if(productCategoryRepository.existsByCategoryName(request.getCategoryName())){
             throw new DataIntegrityViolationException("Category already exists");
         }
-        if(productCategoryRepository.existsByPrefix(request.getPrefix())){
+        if(productCategoryRepository.existsByCategoryName(request.getCategoryCode())){
             throw new DataIntegrityViolationException("Prefix already exists");
         }
 
         ProductCategory createCategory = ProductCategory.builder()
-                .category(request.getCategoryName())
-                .prefix(request.getPrefix())
+                .categoryName(request.getCategoryName())
+                .categoryCode(request.getCategoryCode())
                 .productList(new ArrayList<>())
                 .currentSeq(0)
                 .build();
 
+
         productCategoryRepository.save(createCategory);
 
         return CategoryResponse.builder()
-                .categoryName(createCategory.getCategory())
-                .prefix(createCategory.getPrefix())
+                .categoryName(createCategory.getCategoryName())
+                .categoryCode(createCategory.getCategoryCode())
                 .build();
     }
+
+
+    public CategoryResponse updateCategory(String categoryCode, CategoryRequest request){
+
+        ProductCategory category = productCategoryRepository.findByCategoryCode(categoryCode).orElseThrow(() -> new CategoryNotExistException("Category with code " + request.getCategoryCode() + " doesn't exist"));
+        if(request == null){
+            throw new RuntimeException("Please fill the at least one field");
+        }
+        if(request.getCategoryCode() != null){
+            category.setCategoryCode(request.getCategoryCode());
+        }
+
+        if(request.getCategoryName() != null){
+            category.setCategoryName(request.getCategoryName());
+        }
+
+        productCategoryRepository.save(category);
+        return productMapper.mapToCategoryResponse(category);
+
+    }
+
 }

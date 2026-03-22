@@ -5,29 +5,35 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "product_category")
+@Table(name = "category")
 public class ProductCategory {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(name = "category", unique = true)
-    private String category;
+    @Column(name = "category_code", unique = true)
+    private String categoryCode;
 
-    @Column(name = "prefix", unique = true)
-    private String prefix;
+    @Column(name = "category_name", unique = true)
+    private String categoryName;
 
     @OneToMany(mappedBy = "productCategory", fetch = FetchType.LAZY)
     private List<Product> productList = new ArrayList<>();
 
     @Column(name = "sequence")
+    @Version
     private Integer currentSeq;
+
+    @ManyToMany(mappedBy = "categoryList")
+    @Builder.Default
+    private List<Brand> brandList = new ArrayList<>();
 
     public void addProductToList(Product product){
         productList.add(product);

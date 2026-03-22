@@ -9,14 +9,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductSpecification{
+public class ProductSpecification {
 
-    public static Specification<Product> hasNameLike(String productName){
-        return(root, query, criteriaBuilder) -> {
-            if(productName == null || productName.isEmpty()){
+    public static Specification<Product> hasNameLike(String productName) {
+        return (root, query, criteriaBuilder) -> {
+            if (productName == null || productName.isEmpty()) {
                 return null;
             }
-
             return criteriaBuilder.like(
                     criteriaBuilder.lower(root.get("productName")),
                     "%" + productName.toLowerCase() + "%"
@@ -24,52 +23,60 @@ public class ProductSpecification{
         };
     }
 
-    public static Specification<Product> filterByCategory(Long categoryId){
-        return((root, query, criteriaBuilder) -> {
-            if(categoryId == null){
+    public static Specification<Product> filterByCategory(Long categoryId) {
+        return ((root, query, criteriaBuilder) -> {
+            if (categoryId == null) {
                 return null;
             }
-           Join<Product, ProductCategory> joinCategory = root.join("productCategory",JoinType.LEFT);
+            Join<Product, ProductCategory> joinCategory = root.join("productCategory", JoinType.LEFT);
             return criteriaBuilder.equal(joinCategory.get("id"), categoryId);
         });
     }
 
-    public static Specification<Product> combineWithCategory(){
-        return((root, query, criteriaBuilder) -> {
-            root.fetch("productCategory",JoinType.LEFT);
-            return criteriaBuilder.conjunction();
-        });
-    }
-
-    public static Specification<Product> filterBySupplier(Long supplierId){
-        return((root,query, criteriaBuilder) -> {
-            if(supplierId == null){
+    public static Specification<Product> filterBySupplier(Long supplierId) {
+        return ((root, query, criteriaBuilder) -> {
+            if (supplierId == null) {
                 return null;
             }
-
             Join<Product, Supplier> supplierJoin = root.join("supplier", JoinType.LEFT);
             return criteriaBuilder.equal(supplierJoin.get("id"), supplierId);
         });
     }
 
-    public static Specification<Product> filterByStock(Integer minStock, Integer maxStock){
-        return((root, query, criteriaBuilder) -> {
-            if(minStock == null && maxStock == null) {
+    public static Specification<Product> filterByStock(Integer minStock, Integer maxStock) {
+        return ((root, query, criteriaBuilder) -> {
+            if (minStock == null && maxStock == null) {
                 return null;
             }
-
-            if(minStock != null && maxStock != null){
-                return criteriaBuilder.between(root.get("stock"),minStock, maxStock);
-            }else if(minStock != null){
+            if (minStock != null && maxStock != null) {
+                return criteriaBuilder.between(root.get("stock"), minStock, maxStock);
+            } else if (minStock != null) {
                 return criteriaBuilder.greaterThanOrEqualTo(root.get("stock"), minStock);
-            }else{
-               return criteriaBuilder.lessThanOrEqualTo(root.get("stock"), maxStock);
+            } else {
+                return criteriaBuilder.lessThanOrEqualTo(root.get("stock"), maxStock);
             }
         });
     }
 
-
-
+    /**
+     * Eagerly fetch related entities to prevent N+1 queries.
+     * Use this as the final specification in a chain.
+     */
+    public static Specification<Product> fetchRelations() {
+        return (root, query, criteriaBuilder) -> {
+            if (query.getResultType() != Long.class && query.getResultType() != long.class) {
+                root.fetch("productCategory", JoinType.LEFT);
+                root.fetch("supplier", JoinType.LEFT);
+                root.fetch("brand", JoinType.LEFT);
+            }
+            return criteriaBuilder.conjunction();
+        };
+    }
 
 
 }
+
+
+
+
+

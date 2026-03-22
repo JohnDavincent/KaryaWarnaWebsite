@@ -1,9 +1,9 @@
 package com.example.productservices.controller;
 
 import com.example.common.dto.WebResponse;
-import com.example.productservices.dto.SupplierCreateRequest;
-import com.example.productservices.dto.SupplierResponse;
-import com.example.productservices.dto.SupplierUpdateRequest;
+import com.example.productservices.dto.supplier.SupplierCreateRequest;
+import com.example.productservices.dto.supplier.SupplierResponse;
+import com.example.productservices.dto.supplier.SupplierUpdateRequest;
 import com.example.productservices.service.SupplierService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class SupplierController {
     }
 
     @PatchMapping("/update/supplier/{id}")
-    ResponseEntity<WebResponse<SupplierResponse>> updateSupplier(@Valid @PathVariable Long id, @RequestBody SupplierUpdateRequest request){
+    ResponseEntity<WebResponse<SupplierResponse>> updateSupplier(@Valid @PathVariable String id, @RequestBody SupplierUpdateRequest request){
         SupplierResponse supplierResponse = supplierService.updateSupplier(id, request);
         WebResponse<SupplierResponse> response = WebResponse.<SupplierResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -46,7 +46,7 @@ public class SupplierController {
     }
 
     @DeleteMapping("/delete/supplier/{id}")
-    ResponseEntity<WebResponse<String>> deleteSupplier(@PathVariable Long id){
+    ResponseEntity<WebResponse<String>> deleteSupplier(@PathVariable String id){
         supplierService.deleteSupplier(id);
         WebResponse<String> response = WebResponse.<String>builder()
                 .status(HttpStatus.OK.value())

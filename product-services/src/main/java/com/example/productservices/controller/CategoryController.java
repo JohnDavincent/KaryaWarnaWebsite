@@ -1,17 +1,14 @@
 package com.example.productservices.controller;
 
 import com.example.common.dto.WebResponse;
-import com.example.productservices.dto.CategoryRequest;
-import com.example.productservices.dto.CategoryResponse;
+import com.example.productservices.dto.category.CategoryRequest;
+import com.example.productservices.dto.category.CategoryResponse;
 import com.example.productservices.service.ProductCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -31,4 +28,19 @@ public class CategoryController {
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(webResponse);
     }
+
+    @PatchMapping("/update/category/{categoryCode}")
+    public ResponseEntity<WebResponse<CategoryResponse>> updateCategory(@PathVariable String categoryCode, @RequestBody CategoryRequest categoryRequest){
+        CategoryResponse data = productCategoryService.updateCategory(categoryCode,categoryRequest);
+        WebResponse<CategoryResponse> response = WebResponse.<CategoryResponse>builder()
+                .status(HttpStatus.OK.value())
+                .code("UPDATED")
+                .message("Success update the category!")
+                .data(data)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+
 }
