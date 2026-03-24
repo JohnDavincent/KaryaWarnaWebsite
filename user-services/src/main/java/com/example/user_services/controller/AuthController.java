@@ -44,7 +44,8 @@ public class AuthController {
                     .httpOnly(true) //prevent XSS --> Only browser that can read token and pass it to the server
                     .path("/")// for every endpoint
                     .maxAge(Duration.ofDays(1)) // how long user login --> set to one day, so after one day browser delete the cookies
-                    .sameSite("Strict") // protect from csrf --> browser just send cookies if request come from our own website
+                    .sameSite("Lax") // protect from csrf --> browser just send cookies if request come from our own website
+                    .domain("localhost")
                     .build();
 
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new UserToken(request.getEmail(), jwtToken));

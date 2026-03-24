@@ -27,14 +27,17 @@ public class JwtFilterRequest extends OncePerRequestFilter {
     private final AppUserDetailService appUserDetailService;
     private final JwtUtil jwtUtil;
 
-    private static final List<String> PUBLIC_URL = List.of("/api/login","/api/register","/api/send-request-otp","/api/reset-password","logout");
+    private static final List<String> PUBLIC_URL = List.of("/karyawarna/login","/karyawarna/register","/karyawarna/send-request-otp","/karyawarna/reset-password","logout");
 
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             // serrvletPath --> just take the link ex: http:lcalhost8080:/api/login --> /api/login
             String path = request.getServletPath();
+            System.out.println("=== JWT FILTER ===");
+            System.out.println("Path: " + path);
             // if there is contain the path in the above
             if(PUBLIC_URL.contains(path)){
+                System.out.println("Public URL - skipping auth");
                 filterChain.doFilter(request,response);
                 return; // return it
             }
@@ -46,35 +49,49 @@ public class JwtFilterRequest extends OncePerRequestFilter {
             final String authorizationHeader = request.getHeader("Authorization");
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
                 jwt = authorizationHeader.substring(7);
+                System.out.println("JWT from header: found");
             }
 
             //2. if it is not found in header, check cookies
-            Cookie[] cookies = request.getCookies();
-            if(cookies != null){
-                for( Cookie cookie : cookies){
-                    if("jwt".equals(cookie.getName())){
-                        jwt = cookie.getValue();
-                        break;
+
+            if(jwt == null){
+                Cookie[] cookies = request.getCookies();
+                System.out.println("Cookies null? " + (cookies == null));
+                if(cookies != null){
+                    for( Cookie cookie : cookies){
+                        System.out.println("Cookie: " + cookie.getName());
+                        if("jwt".equals(cookie.getName())){
+                            System.out.println("JWT from cookie: found");
+                            jwt = cookie.getValue();
+                            break;
+                        }
                     }
                 }
+
             }
 
+            System.out.println("JWT found? " + (jwt != null));
             //3. validate the tokens and security context
             if(jwt != null){
-                email = jwtUtil.extractEmail(jwt);
-                if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                    UserDetails userDetail = appUserDetailService.loadUserByUsername(email);
+                try {
+                    email = jwtUtil.extractEmail(jwt);
+                    System.out.println("Email extracted: " + email);
 
-                    if(jwtUtil.validateToken(jwt, userDetail)){
-                        // using null because we know the user is already login so no need to save the password
-                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
+                    if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                        UserDetails userDetail = appUserDetailService.loadUserByUsername(email);
+                        System.out.println("User found: " + userDetail.getUsername());
 
-                        //WebAuthenticationDetailsSource --> add some meta data to the authenticationToken --> ip Address and Session Id;
-                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        boolean isValid = jwtUtil.validateToken(jwt, userDetail);
+                        System.out.println("Token valid? " + isValid);
+                        if(isValid){
+                            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
+                            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));SecurityContextHolder.getContext().setAuthentication(authToken);
+                        }
 
-                        //SecurityContextHolder --> this one that give permission
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
+                } catch(Exception e) {
+                    System.out.println("JWT ERROR: " + e.getMessage());
+                    e.printStackTrace();
                 }
     ;        }
             filterChain.doFilter(request,response);

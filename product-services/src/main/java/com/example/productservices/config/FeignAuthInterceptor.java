@@ -5,6 +5,7 @@ import feign.RequestTemplate;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -28,7 +29,7 @@ public class FeignAuthInterceptor implements RequestInterceptor {
                     .findFirst()
                     .ifPresent(jwtCookie -> {
                         String jwtToken = jwtCookie.getValue();
-                        requestTemplate.header(JWT_TOKEN, jwtCookie.getName() +"="+ jwtToken);
+                        requestTemplate.header("Cookie", jwtCookie.getName() +"="+ jwtToken);
                     });
         }
     }
