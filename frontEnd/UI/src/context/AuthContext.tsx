@@ -46,10 +46,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = useCallback(async (email: string, password: string) => {
     const response = await authApi.login(email, password);
-    const token = response.data.token
-    const user: User = { email };
+
+    console.log('Login response:', response.data);
+    console.log('Response headers:', response.headers);
+    console.log('Cookies after login:', document.cookie);
+   
+    const user: User = { email: response.data.email};
     localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('token', token);
+  
     // Update state immediately along with localStorage
     setState({
       user,

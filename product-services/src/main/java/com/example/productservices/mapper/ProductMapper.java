@@ -42,6 +42,8 @@ public class ProductMapper {
                 .description(product.getDescription())
                 .category(product.getProductCategory() != null ? product.getProductCategory().getCategoryName() : null)
                 .supplier(product.getSupplier() != null ? product.getSupplier().getSupplierName() : null)
+                .brand(product.getBrand() != null ? product.getBrand().getBrandName() : null)
+                .createAt(product.getCreatedAt())
                 .build();
     }
 
@@ -85,25 +87,19 @@ public class ProductMapper {
     }
 
     public BrandCreateResponse mapToBrandResponse(Brand brand) {
-        List<ProductCategory> categories = brand.getCategoryList();
         return BrandCreateResponse.builder()
                 .brandName(brand.getBrandName())
                 .brandCode(brand.getBrandCode())
                 .createdAt(brand.getCreatedAt())
                 .createdBy(brand.getCreatedBy())
-                .supplierName(brand.getSupplier() != null ? brand.getSupplier().getSupplierName() : null)
-                .categoryIds(categories != null ? categories.stream().map(ProductCategory::getId).collect(Collectors.toList()) : null)
                 .build();
     }
 
     public BrandUpdateResponse mapToBrandUpdateResponse(Brand brand){
-        List<ProductCategory> categories = brand.getCategoryList();
         return BrandUpdateResponse.builder()
                 .UpdateAt(brand.getUpdateAt())
                 .UpdateBy(brand.getLastModifiedBy())
                 .brandName(brand.getBrandCode())
-                .supplierName(brand.getSupplier().getSupplierName())
-                .categoryIds(categories != null ? categories.stream().map(ProductCategory::getId).collect(Collectors.toList()) : null)
                 .build();
     }
 

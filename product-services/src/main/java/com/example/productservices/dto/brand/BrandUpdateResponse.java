@@ -19,5 +19,4 @@ public class BrandUpdateResponse {
     private LocalDateTime UpdateAt;
     private String UpdateBy;
     private String supplierName;
-    private List<UUID> categoryIds;
 }

@@ -53,12 +53,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<WebResponse<CategoryNotExistException>> handleCategoryNotExistViolation(CategoryNotExistException e){
         log.error("category not found : {}",e.getMessage());
         WebResponse<CategoryNotExistException> response = WebResponse.<CategoryNotExistException>builder()
-                .status(HttpStatus.CONFLICT.value())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .message(e.getMessage())
-                .code("CONFLICT")
+                .code("BAD REQUEST")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(SupplierExistException.class)
@@ -74,19 +74,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ProductNotExistException.class)
-    public ResponseEntity<WebResponse<ProductNotExistException>> handleDuplicateSupplier(ProductNotExistException e){
+    public ResponseEntity<WebResponse<ProductNotExistException>> handleProductNotExist(ProductNotExistException e){
         log.error("Product Not found : {} ", e.getMessage());
         WebResponse<ProductNotExistException> response = WebResponse.<ProductNotExistException>builder()
-                .status(HttpStatus.CONFLICT.value())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .message(e.getMessage())
-                .code("CONFLICT")
+                .code("BAD REQUEST")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(BrandAlreadyExistException.class)
-    public ResponseEntity<WebResponse<BrandAlreadyExistException>> handleDuplicateSupplier(BrandAlreadyExistException e){
+    public ResponseEntity<WebResponse<BrandAlreadyExistException>> handleBrandAlreadyExist(BrandAlreadyExistException e){
         log.error("Brand already exist : {} ", e.getMessage());
         WebResponse<BrandAlreadyExistException> response = WebResponse.<BrandAlreadyExistException>builder()
                 .status(HttpStatus.CONFLICT.value())
@@ -98,19 +98,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BrandNotExistException.class)
-    public ResponseEntity<WebResponse<BrandNotExistException>> handleDuplicateSupplier(BrandNotExistException e){
+    public ResponseEntity<WebResponse<BrandNotExistException>> handleBrandNotExist(BrandNotExistException e){
         log.error("Brand is not exist : {} ", e.getMessage());
         WebResponse<BrandNotExistException> response = WebResponse.<BrandNotExistException>builder()
-                .status(HttpStatus.CONFLICT.value())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .message(e.getMessage())
-                .code("CONFLICT")
+                .code("BAD REQUEST")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(PrefixAlreadyExistException.class)
-    public ResponseEntity<WebResponse<PrefixAlreadyExistException>> handleDuplicateSupplier(PrefixAlreadyExistException e){
+    public ResponseEntity<WebResponse<PrefixAlreadyExistException>> handlePrefixExist(PrefixAlreadyExistException e){
         log.error("Prefix already exist : {} ", e.getMessage());
         WebResponse<PrefixAlreadyExistException> response = WebResponse.<PrefixAlreadyExistException>builder()
                 .status(HttpStatus.CONFLICT.value())
@@ -119,6 +119,29 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(OrderDetailExistException.class)
+    public ResponseEntity<WebResponse<OrderDetailExistException>> handleOrderDetailExist(OrderDetailExistException e){
+        log.error("Order Detail already exist");
+        WebResponse<OrderDetailExistException> response = WebResponse.<OrderDetailExistException>builder()
+                .status(HttpStatus.CONFLICT.value())
+                .code("CONFLICT")
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(OrderNotExistException.class)
+    public ResponseEntity<WebResponse<OrderNotExistException>> handleOrderNotExist(OrderNotExistException e){
+        log.error("Order is not exist");
+        WebResponse<OrderNotExistException> response = WebResponse.<OrderNotExistException>builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .code("BAD REQUEST")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 

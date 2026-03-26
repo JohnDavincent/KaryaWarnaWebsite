@@ -24,20 +24,17 @@ public class ProductCategory {
     @Column(name = "category_name", unique = true)
     private String categoryName;
 
-    @OneToMany(mappedBy = "productCategory", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productCategory", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Product> productList = new ArrayList<>();
 
     @Column(name = "sequence")
     @Version
     private Integer currentSeq;
 
-    @ManyToMany(mappedBy = "categoryList")
-    @Builder.Default
-    private List<Brand> brandList = new ArrayList<>();
-
     public void addProductToList(Product product){
-        productList.add(product);
+        this.productList.add(product);
         product.setProductCategory(this);
     }
+
 
 }

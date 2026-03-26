@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,10 +22,12 @@ import java.util.List;
 @Table(name = "order")
 public class Order extends BaseEntity {
     @Id
-    private String Id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "order_number")
     private String orderNumber;
+
 
     @Column(name = "grand_total")
     private BigDecimal grandTotal;
@@ -35,8 +38,12 @@ public class Order extends BaseEntity {
     @Column(name = "status")
     private Status status;
 
-    @OneToOne(mappedBy = "order_id", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
+    public void addToOrderList(OrderDetail detail){
+        this.orderDetailList.add(detail);
+        detail.setOrder(this);
+    }
 
 }

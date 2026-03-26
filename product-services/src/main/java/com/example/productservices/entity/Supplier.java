@@ -37,25 +37,13 @@ public class Supplier {
     @Column(name = "description", nullable = true)
     private String desc;
 
-    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Product> productList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
-    private List<Brand> brandList = new ArrayList<>();
-
-
     public void addProductToList(Product product){
-        productList.add(product);
+        this.productList.add(product);
         product.setSupplier(this);
     }
 
-    public void addBrandToList(Brand brand){
-        brandList.add(brand);
-        brand.setSupplier(this);
-    }
-
-    public void deleteBrandFromList(Brand brand){
-        brandList.remove(brand);
-    }
 }
 

@@ -52,27 +52,9 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id")
     private ProductCategory productCategory;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_brand",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "brand_id")
-    )
-    @Builder.Default
-    @JsonIgnore
-    private List<Brand> brandList = new ArrayList<>();
-
-    //add method
-    public void addBrandToList(Brand brand){
-        this.brandList.add(brand);
-        brand.getProductList().add(this);
-    }
-
-    //delete method
-    public void deleteBrandFromList(Brand brand){
-        this.getBrandList().remove(brand);
-        brand.getProductList().remove(this);
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 
 }
 

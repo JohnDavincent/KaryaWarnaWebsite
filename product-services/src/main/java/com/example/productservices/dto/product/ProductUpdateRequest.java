@@ -40,4 +40,7 @@ public class ProductUpdateRequest {
     @Nullable
     private UUID supplierId;
 
+    @Nullable
+    private UUID brandId;
+
 }

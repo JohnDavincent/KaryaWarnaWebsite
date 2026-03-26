@@ -29,6 +29,6 @@ public class BrandController {
                 .data(brand)
                 .build();
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

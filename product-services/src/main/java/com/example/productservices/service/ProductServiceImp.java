@@ -1,10 +1,7 @@
 package com.example.productservices.service;
 
 import com.example.common.exception.*;
-import com.example.productservices.dto.product.ProductCreateRequest;
-import com.example.productservices.dto.product.ProductResponse;
-import com.example.productservices.dto.product.ProductUpdateRequest;
-import com.example.productservices.dto.product.SearchProductResult;
+import com.example.productservices.dto.product.*;
 import com.example.productservices.entity.Brand;
 import com.example.productservices.entity.Product;
 import com.example.productservices.entity.ProductCategory;
@@ -26,6 +23,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class ProductServiceImp implements ProductService {
     @Override
     public ProductResponse createProduct(ProductCreateRequest request) {
         if (productRepository.existsByProductName(request.getProductName())) {
-            throw new ProductExistException("Product sudah ada di dalam database");
+            throw new ProductExistException("Product already exist in database");
         }
 
         if (request.getBrand() == null && request.getSupplier() == null) {
@@ -58,7 +57,8 @@ public class ProductServiceImp implements ProductService {
         if (request.getBrand() != null) {
             Brand brand = brandRepository.findByBrandName(request.getBrand())
                     .orElseThrow(() -> new BrandNotExistException("Brand with name : " + request.getBrand() + " doesn't exist"));
-            createProduct.addBrandToList(brand);
+            createProduct.setBrand(brand);
+
         }
 
         Supplier supplier = supplierRepository.findBySupplierName(request.getSupplier())
@@ -91,6 +91,7 @@ public class ProductServiceImp implements ProductService {
                 .where(ProductSpecification.hasNameLike(productFilter.getProductName()))
                 .and(ProductSpecification.filterByCategory(productFilter.getCategoryId()))
                 .and(ProductSpecification.filterBySupplier(productFilter.getSupplierId()))
+                .and(ProductSpecification.filterByBrand(productFilter.getBrandId()))
                 .and(ProductSpecification.filterByStock(productFilter.getMinStock(), productFilter.getMaxStock()))
                 .and(ProductSpecification.fetchRelations());
 
@@ -123,12 +124,22 @@ public class ProductServiceImp implements ProductService {
         }
         if (request.getCategoryId() != null && productCategoryRepository.existsById(request.getCategoryId())) {
             ProductCategory existCategory = productCategoryRepository.getReferenceById(request.getCategoryId());
-            existProduct.setProductCategory(existCategory);
+            existProduct.getProductCategory().getProductList().remove(existProduct);
+            existCategory.addProductToList(existProduct);
+
         }
 
         if (request.getSupplierId() != null && supplierRepository.existsById(request.getSupplierId())) {
             Supplier existSupplier = supplierRepository.getReferenceById(request.getSupplierId());
-            existProduct.setSupplier(existSupplier);
+            existProduct.getSupplier().getProductList().remove(existProduct);
+            existSupplier.addProductToList(existProduct);
+
+        }
+
+        if(request.getBrandId() != null && brandRepository.existsById(request.getBrandId())){
+            Brand existBrand = brandRepository.getReferenceById(request.getBrandId());
+            existProduct.getBrand().getProductList().remove(existProduct);
+            existBrand.addProductToList(existProduct);
         }
 
         productRepository.save(existProduct);
@@ -142,5 +153,37 @@ public class ProductServiceImp implements ProductService {
         }
 
         productRepository.deleteByProductCode(productCode);
+    }
+
+    @Override
+    public Page<ProductResponse> viewProduct(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> ProductResponse.builder()
+                        .productName(product.getProductName())
+                        .stock(product.getStock())
+                        .description(product.getDescription())
+                        .category(product.getProductCategory().getCategoryName())
+                        .sellPrice(product.getSellPrice())
+                        .purchasePrice(product.getPurchasePrice())
+                        .createAt(product.getCreatedAt())
+                        .supplier(product.getSupplier().getSupplierName())
+                        .productCode(product.getProductCode())
+                        .brand(product.getBrand().getBrandName())
+                        .build()
+                );
+
+    }
+
+    @Override
+    public OrderDetailProduct getProductDetail(UUID id) {
+        Product existProduct = productRepository.findById(id).orElseThrow(() -> new ProductNotExistException("Product with id : " + id + " not exist"));
+        return OrderDetailProduct.builder()
+                .productId(existProduct.getId())
+                .productName(existProduct.getProductName())
+                .pricePerUnit(existProduct.getSellPrice())
+                .stock(existProduct.getStock())
+                .build();
+
+
     }
 }

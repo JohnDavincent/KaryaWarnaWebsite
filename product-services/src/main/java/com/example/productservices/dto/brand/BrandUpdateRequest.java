@@ -22,13 +22,7 @@ public class BrandUpdateRequest {
     @Size(min = 1, max = 30)
     private String brandName;
 
-
     @NotNull
     private String brandCode;
 
-    @Nullable
-    private UUID supplier;
-
-    @Nullable
-    private List<UUID> categoryIds;
 }

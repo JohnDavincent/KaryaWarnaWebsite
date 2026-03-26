@@ -41,26 +41,9 @@ public class BrandServiceImp implements BrandService {
         if(brandRepository.existsByBrandCode(request.getBrandCode())){
             throw new PrefixAlreadyExistException(("Prefix with name : " + request.getBrandCode() + " Is already exist"));
         }
-
-        Supplier supplier = supplierRepository.findBySupplierName(request.getSupplierName()).orElseThrow(() -> new SupplierNotExistException("Supplier with id " + request.getSupplierName() +  " Not exist, please create the supplier first"));
         Brand createBrand = productMapper.mapToBrand(request);
-        createBrand.setSupplier(supplier);
-        supplier.addBrandToList(createBrand);
-
-        // Link categories to brand
-        if (request.getCategoryIds() != null && !request.getCategoryIds().isEmpty()) {
-            List<ProductCategory> categories = productCategoryRepository.findAllById(request.getCategoryIds());
-            if (categories.size() != request.getCategoryIds().size()) {
-                throw new CategoryNotExistException("Some categories not found");
-            }
-            for (ProductCategory category : categories) {
-                createBrand.getCategoryList().add(category);
-                category.getBrandList().add(createBrand);
-            }
-        }
 
         brandRepository.save(createBrand);
-
         return productMapper.mapToBrandResponse(createBrand);
     }
 
@@ -77,16 +60,11 @@ public class BrandServiceImp implements BrandService {
         if(request.getBrandName() != null){
             brand.setBrandName(request.getBrandName());
         }
-        if(request.getSupplier() != null){
-            Supplier updateSupplier = supplierRepository.findById(request.getSupplier()).orElseThrow(() -> new SupplierNotExistException("Supplier with id : " + request.getSupplier() + " doesn't exist"));
-            supplier.deleteBrandFromList(brand);
-            brand.setSupplier(updateSupplier);
-            updateSupplier.addBrandToList(brand);
-        }
-        //CARI UNTUK KASUS MENGUBAH ID DARI CATEGORYNYA
 
         return productMapper.mapToBrandUpdateResponse(brand);
     }
+
+
 
 
 

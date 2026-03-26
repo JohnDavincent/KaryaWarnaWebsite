@@ -24,5 +24,4 @@ public class BrandCreateResponse {
     private LocalDateTime createdAt;
     private String createdBy;
     private String supplierName;
-    private List<UUID> categoryIds;
 }

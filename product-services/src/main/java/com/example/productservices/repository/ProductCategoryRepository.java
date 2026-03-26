@@ -18,6 +18,5 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
     boolean existsByCategoryName(String categoryName);
     boolean existsByCategoryCode(String categoryCode);
     Optional<ProductCategory> findByCategoryCode(String categoryCode);
-    List<ProductCategory> findByBrandList_Id(UUID brandId);
 
 }

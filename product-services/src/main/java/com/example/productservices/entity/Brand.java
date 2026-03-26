@@ -1,8 +1,6 @@
 package com.example.productservices.entity;
 
 import com.example.common.entity.BaseEntity;
-import com.example.productservices.mapper.ProductMapper;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,35 +28,16 @@ public class Brand extends BaseEntity {
     @Column(name = "brand_code", unique = true)
     private String brandCode;
 
-    @ManyToMany(mappedBy = "brandList")
+   @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Builder.Default
-    @JsonIgnore
     private List<Product> productList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-
-    @ManyToMany
-    @JoinTable(
-            name = "brand_category",
-            joinColumns = @JoinColumn(name = "brand_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    @Builder.Default
-    private List<ProductCategory> categoryList = new ArrayList<>();
-
-    //add method
-    public void addToProductList(Product product){
+    public void addProductToList(Product product){
         this.productList.add(product);
-        product.addBrandToList(this);
+        product.setBrand(this);
     }
 
-    //remove method
-    public void removeProductFromList(Product product){
-        this.productList.remove(product);
-        product.getBrandList().remove(this);
-    }
+
 
 
 }
