@@ -23,8 +23,8 @@ public class BrandController {
     ResponseEntity<WebResponse<BrandCreateResponse>> createBrand (@RequestBody BrandCreateRequest request){
         BrandCreateResponse brand = brandService.createBrand(request);
         WebResponse<BrandCreateResponse> response = WebResponse.<BrandCreateResponse>builder()
-                .status(HttpStatus.OK.value())
-                .code("OK")
+                .status(HttpStatus.CREATED.value())
+                .code("CREATED")
                 .message("Success create new Brand")
                 .data(brand)
                 .build();

@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.UUID;
 
-@FeignClient(url = "http://localhost:8101/karyawarna/admin/")
+@FeignClient(
+        name = "product-services",
+        url = "http://localhost:8101/karyawarna/admin/"
+)
 
 public interface ProductClient {
 

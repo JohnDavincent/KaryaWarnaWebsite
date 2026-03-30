@@ -42,11 +42,11 @@ public class OrderDetailServiceImp implements OrderDetailService {
             throw new ProductNotExistException("Product with id : " + req.getProductId() + " doesn't exist");
         }
 
-        if(orderDetailRepository.existsByProductId(product.getProductId())){
-            throw new OrderDetailExistException("Product already in the list");
+        if(orderDetailRepository.existsByOrderIdAndProductId(orderId,product.getProductId())){
+            throw new OrderDetailExistException("Product already in the order list");
         }
 
-        if(product.getStock() <= req.getQuantity()){
+        if(product.getStock() < req.getQuantity()){
             throw new RuntimeException("Product Stock is not enough");
         }
 

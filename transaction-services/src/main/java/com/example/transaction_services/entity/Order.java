@@ -36,6 +36,7 @@ public class Order extends BaseEntity {
     private BigDecimal totalDiscount;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.PERSIST})

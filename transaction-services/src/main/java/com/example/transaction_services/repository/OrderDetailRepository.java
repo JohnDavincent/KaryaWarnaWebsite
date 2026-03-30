@@ -10,4 +10,5 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
     Optional<OrderDetail> findByOrderId(UUID id);
     boolean existsById(UUID id);
     boolean existsByProductId(UUID productId);
+    boolean existsByOrderIdAndProductId(UUID orderId, UUID productId);
 }
