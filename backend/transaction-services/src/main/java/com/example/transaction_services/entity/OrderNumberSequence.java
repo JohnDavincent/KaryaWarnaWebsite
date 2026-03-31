@@ -22,7 +22,7 @@ public class OrderNumberSequence {
     @Column(name = "sequence_date")
     private LocalDate sequenceDate;
 
-    @Column(name = "last_sequence", unique = true)
+    @Column(name = "last_sequence")
     private Long lastSequence;
 
 

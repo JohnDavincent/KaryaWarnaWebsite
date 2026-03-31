@@ -4,11 +4,14 @@ import com.example.common.dto.WebResponse;
 import com.example.transaction_services.dto.CreateOrderDetailReq;
 import com.example.transaction_services.dto.CreateOrderDetailRes;
 import com.example.transaction_services.dto.CreateOrderResponse;
+import com.example.transaction_services.dto.ViewLastestOrder;
 import com.example.transaction_services.entity.Order;
 import com.example.transaction_services.service.OrderDetailService;
 import com.example.transaction_services.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +20,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/karyawarna")
 @RequiredArgsConstructor
-public class OrderController {
+public class    OrderController {
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
 
@@ -94,4 +98,16 @@ public class OrderController {
 
 
 
+    @GetMapping("/latest-order")
+    ResponseEntity<WebResponse<List<ViewLastestOrder>>> viewLatestOrder(){
+        List<ViewLastestOrder> getOrder = orderService.getLatestOrder();
+        WebResponse<List<ViewLastestOrder>> response = WebResponse.<List<ViewLastestOrder>>builder()
+                .status(HttpStatus.OK.value())
+                .code("OK")
+                .message("Success")
+                .data(getOrder)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 }

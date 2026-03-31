@@ -18,7 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Query(
            value = """
                 SELECT *
-                FROM "order" o
+                FROM transaction_services."order" o
                 WHERE o.created_at Between :startDate AND :endDate
                 ORDER BY o.created_at DESC                             
                 """,
@@ -32,4 +32,15 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     )
     Page<Order> findOrderByCreatedAt(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+
+    @Query(
+            value = """
+                SELECT *
+                FROM transaction_services."order" o
+                ORDER BY o.created_at DESC           
+                LIMIT 5
+            """,
+            nativeQuery = true
+    )
+    List<Order> viewLastCreatedOrder();
 }

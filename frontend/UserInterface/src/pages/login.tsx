@@ -1,10 +1,25 @@
-import React from "react";
+
+import React, { useState } from "react";
+import { login } from "../fetch/Authentication";
 
 export default function Login() {
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted");
-  };
+    await login(formData)
+  }
 
   return (
     <div className="bg-background text-on-surface font-body min-h-screen flex flex-col selection:bg-primary/30">
@@ -58,8 +73,9 @@ export default function Login() {
               <div className="relative floating-input">
                 <input
                   className="w-full bg-transparent border-0 border-b border-outline-variant/30 px-0 py-3 text-on-surface focus:ring-0 focus:border-primary transition-all peer"
-                  id="email"
-                  placeholder=" "
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   type="email"
                 />
                 <label
@@ -73,8 +89,9 @@ export default function Login() {
               <div className="relative floating-input">
                 <input
                   className="w-full bg-transparent border-0 border-b border-outline-variant/30 px-0 py-3 text-on-surface focus:ring-0 focus:border-primary transition-all peer"
-                  id="password"
-                  placeholder=" "
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   type="password"
                 />
                 <label

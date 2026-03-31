@@ -4,6 +4,7 @@ import com.example.common.dto.WebResponse;
 import com.example.common.exception.OrderNotExistException;
 import com.example.transaction_services.dto.CreateOrderResponse;
 import com.example.transaction_services.dto.Status;
+import com.example.transaction_services.dto.ViewLastestOrder;
 import com.example.transaction_services.entity.Order;
 import com.example.transaction_services.entity.OrderDetail;
 import com.example.transaction_services.entity.OrderNumberSequence;
@@ -31,6 +32,7 @@ public class OrderServiceImp implements OrderService{
 
     private final OrderRepository orderRepository;
     private final OrderNumberSequenceRepository orderNumberSequenceRepository;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd- MM- yyyy");
 
     @Override
     public CreateOrderResponse createOrderForm() {
@@ -39,6 +41,7 @@ public class OrderServiceImp implements OrderService{
                 .grandTotal(BigDecimal.ZERO)
                 .totalDiscount(BigDecimal.ZERO)
                 .status(Status.DRAFT)
+
                 .build();
 
         Order createOrder = orderRepository.save(newOrder);
@@ -107,5 +110,22 @@ public class OrderServiceImp implements OrderService{
                             .orderId(order.getId())
                             .build();
                 });
+    }
+
+    @Override
+    public List<ViewLastestOrder> getLatestOrder() {
+
+        return orderRepository.viewLastCreatedOrder().stream()
+                .map(order -> {
+                    return ViewLastestOrder.builder()
+                            .order_number(order.getOrderNumber())
+                            .created_at(order.getCreatedAt().format(formatter))
+                            .grand_total(order.getGrandTotal())
+                            .modified_by(order.getLastModifiedBy())
+                            .status(order.getStatus())
+                            .build();
+                }).toList();
+
+
     }
 }
