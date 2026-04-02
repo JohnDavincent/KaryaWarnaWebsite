@@ -7,10 +7,13 @@ import com.example.productservices.dto.supplier.SupplierResponse;
 import com.example.productservices.dto.supplier.SupplierUpdateRequest;
 import com.example.productservices.entity.Supplier;
 import com.example.productservices.mapper.ProductMapper;
+import com.example.productservices.projection.SupplierProjection;
 import com.example.productservices.repository.SupplierRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -64,5 +67,10 @@ public class SupplierServiceImp implements SupplierService{
        }
 
        supplierRepository.deleteBySupplierCode(supplierCode);
+    }
+
+    @Override
+    public List<SupplierProjection> viewAll() {
+        return supplierRepository.viewAll();
     }
 }

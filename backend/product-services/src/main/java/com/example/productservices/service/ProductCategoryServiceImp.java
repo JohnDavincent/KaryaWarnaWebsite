@@ -5,6 +5,7 @@ import com.example.productservices.dto.category.CategoryRequest;
 import com.example.productservices.dto.category.CategoryResponse;
 import com.example.productservices.entity.ProductCategory;
 import com.example.productservices.mapper.ProductMapper;
+import com.example.productservices.projection.CategoryProjection;
 import com.example.productservices.repository.ProductCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -63,6 +65,11 @@ public class ProductCategoryServiceImp implements ProductCategoryService {
         productCategoryRepository.save(category);
         return productMapper.mapToCategoryResponse(category);
 
+    }
+
+    @Override
+    public List<CategoryProjection> viewAll() {
+        return productCategoryRepository.viewAll();
     }
 
 }

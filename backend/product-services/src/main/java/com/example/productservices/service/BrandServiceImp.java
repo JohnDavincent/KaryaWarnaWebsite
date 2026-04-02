@@ -1,17 +1,11 @@
 package com.example.productservices.service;
 
 import com.example.common.exception.*;
-import com.example.productservices.dto.brand.BrandCreateRequest;
-import com.example.productservices.dto.brand.BrandCreateResponse;
-import com.example.productservices.dto.brand.BrandUpdateRequest;
-import com.example.productservices.dto.brand.BrandUpdateResponse;
+import com.example.productservices.dto.brand.*;
 import com.example.productservices.entity.Brand;
-import com.example.productservices.entity.ProductCategory;
-import com.example.productservices.entity.Supplier;
 import com.example.productservices.mapper.ProductMapper;
 import com.example.productservices.repository.BrandRepository;
-import com.example.productservices.repository.ProductCategoryRepository;
-import com.example.productservices.repository.SupplierRepository;
+import com.example.productservices.projection.BrandProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,9 +19,6 @@ public class BrandServiceImp implements BrandService {
 
     private final BrandRepository brandRepository;
     private final ProductMapper productMapper;
-    private final SupplierRepository supplierRepository;
-    private final ProductCategoryRepository productCategoryRepository;
-    private Supplier supplier;
 
     @Override
     public BrandCreateResponse createBrand(BrandCreateRequest request) {
@@ -64,8 +55,9 @@ public class BrandServiceImp implements BrandService {
         return productMapper.mapToBrandUpdateResponse(brand);
     }
 
-
-
-
+    @Override
+    public List<BrandProjection> viewALl() {
+        return brandRepository.viewAll();
+    }
 
 }

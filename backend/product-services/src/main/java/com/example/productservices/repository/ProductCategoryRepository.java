@@ -2,6 +2,8 @@ package com.example.productservices.repository;
 
 import com.example.productservices.entity.Product;
 import com.example.productservices.entity.ProductCategory;
+import com.example.productservices.projection.CategoryProjection;
+import com.example.productservices.projection.SupplierProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +21,11 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
     boolean existsByCategoryCode(String categoryCode);
     Optional<ProductCategory> findByCategoryCode(String categoryCode);
 
+    @Query(
+            value = """
+                SELECT cp.category_name, cp.category_code 
+                FROM inventory_services.category cp
+            """,nativeQuery = true
+    )
+    List<CategoryProjection> viewAll();
 }

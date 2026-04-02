@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class ViewLastestOrder {
     private String order_number;
-    private BigDecimal grand_total;
+    private String grand_total;
     private Status status;
     private String created_at;
     private String modified_by;

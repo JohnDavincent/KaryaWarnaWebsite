@@ -120,8 +120,8 @@ function Dashboard() {
                   <tr className="border-b border-outline-variant/15">
                     <th className="py-3 text-[10px] font-label font-medium uppercase tracking-widest text-on-surface-variant">Transaction Number</th>
                     <th className="py-3 text-[10px] font-label font-medium uppercase tracking-widest text-on-surface-variant">Grand total</th>
-                    <th className="py-3 text-[10px] font-label font-medium uppercase tracking-widest text-on-surface-variant">Modif by</th>
-                    <th className="py-3 text-[10px] font-label font-medium uppercase tracking-widest text-on-surface-variant">Time</th>
+                    <th className="py-3 text-[10px] font-label font-medium uppercase tracking-widest text-on-surface-variant">Modified by</th>
+                    <th className="py-3 text-[10px] font-label font-medium uppercase tracking-widest text-on-surface-variant">Date</th>
                     <th className="py-3 text-[10px] font-label font-medium uppercase tracking-widest text-on-surface-variant">Status</th>
                   </tr>
                 </thead>
@@ -134,7 +134,7 @@ function Dashboard() {
                       <td className="py-4 text-on-surface-variant font-medium">{item.order_number}</td>
                       <td className="py-4 text-on-surface">{item.grand_total}</td>
                       <td className="py-4 text-on-surface">{item.modified_by}</td>
-                      <td className="py-4 text-on-surface-variant">{item.created_at}</td>
+                      <td className="py-4 text-on-surface-variant">{item.status == "SUCCESS" ? item.update_at : item.created_at}</td>
                       <td className="py-4">
                         <span className="bg-primary/10 text-primary-fixed px-2 py-0.5 rounded-full text-[10px] font-bold">
                           {item.status}

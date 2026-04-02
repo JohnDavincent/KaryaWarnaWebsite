@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -88,6 +89,11 @@ public class ProductController {
         OrderDetailProduct product = productService.getProductDetail(id);
         return ResponseEntity.ok().body(product);
 
+    }
+
+    @PostMapping("/update-stock")
+    void updateStock(@RequestBody Map<UUID,Integer> map){
+        productService.updateStock(map);
     }
 
 

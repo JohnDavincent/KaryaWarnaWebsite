@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -183,7 +184,19 @@ public class ProductServiceImp implements ProductService {
                 .pricePerUnit(existProduct.getSellPrice())
                 .stock(existProduct.getStock())
                 .build();
+    }
 
+    @Transactional
+    @Override
+    public void updateStock(Map<UUID, Integer> orderPackage) {
 
+        for(Map.Entry<UUID,Integer> entry : orderPackage.entrySet()){
+            Product product = productRepository.findById(entry.getKey()).orElseThrow(() -> new ProductNotExistException("Product with product id : " + entry.getKey() + " not exist!"));
+            if(product.getStock() < entry.getValue()){
+                throw new RuntimeException("Product : " + product.getProductName() + " stock is not enough");
+            }
+            product.setStock(product.getStock() - entry.getValue());
+            productRepository.save(product);
+        }
     }
 }

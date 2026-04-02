@@ -1,38 +1,41 @@
 package com.example.transaction_services.service;
 
-import com.example.common.dto.WebResponse;
 import com.example.common.exception.OrderNotExistException;
+import com.example.transaction_services.client.ProductClient;
 import com.example.transaction_services.dto.CreateOrderResponse;
 import com.example.transaction_services.dto.Status;
 import com.example.transaction_services.dto.ViewLastestOrder;
 import com.example.transaction_services.entity.Order;
-import com.example.transaction_services.entity.OrderDetail;
-import com.example.transaction_services.entity.OrderNumberSequence;
+import com.example.transaction_services.projection.ProductStockProjection;
+import com.example.transaction_services.repository.OrderDetailRepository;
 import com.example.transaction_services.repository.OrderNumberSequenceRepository;
 import com.example.transaction_services.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImp implements OrderService{
 
     private final OrderRepository orderRepository;
+    private final OrderDetailRepository orderDetailRepository;
     private final OrderNumberSequenceRepository orderNumberSequenceRepository;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd- MM- yyyy");
+    private final ProductClient productClient;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd-MM-yyyy");
 
     @Override
     public CreateOrderResponse createOrderForm() {
@@ -82,8 +85,17 @@ public class OrderServiceImp implements OrderService{
         long lastSequenceNumber = orderNumberSequenceRepository.getLastSequence(today);
 
         String orderNumber = formatToday + "-" + lastSequenceNumber;
+        List<ProductStockProjection> stockProjections = orderDetailRepository.getStock(existOrder.getId());
+        Map<UUID, Integer> map = stockProjections.stream()
+                //collect --> you want to serve the data as what
+                .collect(Collectors.toMap(
+                        ProductStockProjection::getProductId,
+                        ProductStockProjection::getQuantity
+                ));
 
+        productClient.updateStock(map);
         existOrder.setOrderNumber(orderNumber);
+        existOrder.setUpdateAt((today.atStartOfDay()));
         existOrder.setStatus(Status.SUCCESS);
 
     }
@@ -112,6 +124,7 @@ public class OrderServiceImp implements OrderService{
                 });
     }
 
+
     @Override
     public List<ViewLastestOrder> getLatestOrder() {
 
@@ -120,12 +133,21 @@ public class OrderServiceImp implements OrderService{
                     return ViewLastestOrder.builder()
                             .order_number(order.getOrderNumber())
                             .created_at(order.getCreatedAt().format(formatter))
-                            .grand_total(order.getGrandTotal())
+                            .grand_total(formatInRp(order.getGrandTotal()))
                             .modified_by(order.getLastModifiedBy())
                             .status(order.getStatus())
                             .build();
                 }).toList();
+    }
 
+
+    public String formatInRp(BigDecimal amount){
+        Locale indo = Locale.of("id","ID");
+        NumberFormat formatMoney = NumberFormat.getCurrencyInstance(indo);
+        formatMoney.setMaximumFractionDigits(0);
+        return formatMoney.format(amount);
 
     }
+
+
 }

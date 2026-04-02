@@ -3,12 +3,15 @@ package com.example.productservices.controller;
 import com.example.common.dto.WebResponse;
 import com.example.productservices.dto.category.CategoryRequest;
 import com.example.productservices.dto.category.CategoryResponse;
+import com.example.productservices.projection.CategoryProjection;
 import com.example.productservices.service.ProductCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -37,6 +40,18 @@ public class CategoryController {
                 .code("UPDATED")
                 .message("Success update the category!")
                 .data(data)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/categorys")
+    ResponseEntity<WebResponse<List<CategoryProjection>>> viewAllBrand(){
+        List<CategoryProjection> allCategory = productCategoryService.viewAll();
+        WebResponse<List<CategoryProjection>> response = WebResponse.<List<CategoryProjection>>builder()
+                .status(HttpStatus.OK.value())
+                .code("OK")
+                .message("Success get all brand")
+                .data(allCategory)
                 .build();
 
         return ResponseEntity.ok(response);

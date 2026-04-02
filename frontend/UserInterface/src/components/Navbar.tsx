@@ -10,7 +10,7 @@ function Navbar() {
         {/* Active: Dashboard*/}
         <a
           className="group relative flex items-center justify-center w-12 h-12 bg-[#201F1F] text-[#2DDBDE] border-l-2 border-[#2DDBDE] scale-95 active:scale-90 transition-all duration-200"
-          href="#"
+          href="/dashboard"
         >
           <span className="material-symbols-outlined" data-icon="dashboard">
             dashboard
@@ -18,10 +18,10 @@ function Navbar() {
         </a>
         <a
           className="group flex items-center justify-center w-12 h-12 text-[#C1C6D7] opacity-70 hover:bg-[#1C1B1B] hover:text-[#2DDBDE] hover:opacity-100 scale-95 active:scale-90 transition-all duration-200"
-          href="#"
+          href="/product"
         >
           <span className="material-symbols-outlined" data-icon="inventory_2">
-            inventory_2
+            inventory
           </span>
         </a>
         <a

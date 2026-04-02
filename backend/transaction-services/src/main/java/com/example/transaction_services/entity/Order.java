@@ -28,7 +28,6 @@ public class Order extends BaseEntity {
     @Column(name = "order_number")
     private String orderNumber;
 
-
     @Column(name = "grand_total")
     private BigDecimal grandTotal;
 

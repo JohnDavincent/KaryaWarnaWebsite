@@ -4,13 +4,13 @@ import com.example.common.dto.WebResponse;
 import com.example.productservices.dto.brand.BrandCreateRequest;
 import com.example.productservices.dto.brand.BrandCreateResponse;
 import com.example.productservices.service.BrandService;
+import com.example.productservices.projection.BrandProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,4 +31,18 @@ public class BrandController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/brands")
+    ResponseEntity<WebResponse<List<BrandProjection>>> viewAllBrand(){
+        List<BrandProjection> allBrand = brandService.viewALl();
+        WebResponse<List<BrandProjection>> response = WebResponse.<List<BrandProjection>>builder()
+                .status(HttpStatus.OK.value())
+                .code("OK")
+                .message("Success get all brand")
+                .data(allBrand)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
 }

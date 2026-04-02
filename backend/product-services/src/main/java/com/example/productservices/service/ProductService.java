@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -16,5 +17,6 @@ public interface ProductService {
     public void deleteProduct(String productId);
     public Page<ProductResponse> viewProduct(Pageable pageable);
     public OrderDetailProduct getProductDetail(UUID id);
+    public void updateStock(Map<UUID,Integer> orderPackage);
 
 }

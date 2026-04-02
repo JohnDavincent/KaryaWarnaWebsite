@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication
-@EnableFeignClients(basePackages = {"com.example.transaction_services.client","com.example.common"})
+@SpringBootApplication(scanBasePackages = {"com.example.transaction_services","com.example.common"})
+@EnableFeignClients(basePackages = {"com.example.transaction_services.client"})
 public class TransactionServicesApplication {
 
 	public static void main(String[] args) {

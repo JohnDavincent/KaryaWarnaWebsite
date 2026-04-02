@@ -4,12 +4,15 @@ import com.example.common.dto.WebResponse;
 import com.example.productservices.dto.supplier.SupplierCreateRequest;
 import com.example.productservices.dto.supplier.SupplierResponse;
 import com.example.productservices.dto.supplier.SupplierUpdateRequest;
+import com.example.productservices.projection.SupplierProjection;
 import com.example.productservices.service.SupplierService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,6 +60,20 @@ public class SupplierController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/suppliers")
+    ResponseEntity<WebResponse<List<SupplierProjection>>> viewAll(){
+        List<SupplierProjection> allSupplier =  supplierService.viewAll();
+        WebResponse<List<SupplierProjection>> response = WebResponse.<List<SupplierProjection>>builder()
+                .status(HttpStatus.OK.value())
+                .message("Success show data")
+                .code("OK")
+                .data(allSupplier)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
 
 
 }

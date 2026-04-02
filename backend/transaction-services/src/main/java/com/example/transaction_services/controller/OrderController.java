@@ -98,6 +98,7 @@ public class    OrderController {
 
 
 
+
     @GetMapping("/latest-order")
     ResponseEntity<WebResponse<List<ViewLastestOrder>>> viewLatestOrder(){
         List<ViewLastestOrder> getOrder = orderService.getLatestOrder();
@@ -110,4 +111,8 @@ public class    OrderController {
 
         return ResponseEntity.ok(response);
     }
+
+
+
+
 }
