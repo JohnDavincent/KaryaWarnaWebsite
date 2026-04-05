@@ -77,6 +77,8 @@ export default function Login() {
                   value={formData.email}
                   onChange={handleChange}
                   type="email"
+                  required
+
                 />
                 <label
                   className="absolute left-0 top-3 text-on-surface-variant/60 text-sm tracking-wide"

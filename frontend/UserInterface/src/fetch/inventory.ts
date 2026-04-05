@@ -1,5 +1,5 @@
 
-export const addProduct = async (formData: { productName: string, purchasedPrice: number, sellPrice: number, description: string, brand: string, category: string, supplier: string, stock: number }) => {
+export const addProduct = async (formData: { productName: string, purchasePrice: number, sellPrice: number, description: string, brand: string, category: string, supplier: string, stock: number }) => {
     const response = await fetch("http://localhost:8101/karyawarna/admin/create/product", {
         method: "POST",
         credentials: "include",
@@ -24,4 +24,49 @@ export const getSupplier = async () => {
         method: "GET",
 
     })
+
+    if (response.ok) {
+        const result = await response.json()
+        console.log(result)
+        return result;
+    }
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+
+}
+
+export const getBrands = async () => {
+    const response = await fetch("http://localhost:8101/karyawarna/admin/brands", {
+        method: "GET",
+
+    })
+    if (response.ok) {
+        const result = await response.json()
+        console.log(result)
+        return result;
+    }
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
+}
+
+export const getCategories = async () => {
+    const response = await fetch("http://localhost:8101/karyawarna/admin/categorys", {
+        method: "GET"
+    })
+    if (response.ok) {
+        const result = await response.json()
+        console.log(result)
+        return result;
+    }
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+    }
 }

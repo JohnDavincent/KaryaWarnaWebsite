@@ -7,6 +7,8 @@ function Dashboard() {
 
   const [transactions, setTransactions] = useState<any[]>([]);
 
+
+
   useEffect(() => {
     const fetchTransaction = async () => {
       const result = await getTransaction();
@@ -16,10 +18,11 @@ function Dashboard() {
   }, [])
 
 
+
   return (
     <div className="font-body bg-background text-on-background selection:bg-primary/30 min-h-screen">
       <Navbar />
-      <header className="fixed top-0 right-0 left-20 z-40 flex justify-between items-center px-8 docked full-width top-0 h-16 bg-[#131313]/80 backdrop-blur-xl border-b border-[#414754]/15">
+      <header className="fixed top-0 right-0 left-20 peer-hover:left-64 transition-all duration-300 z-40 flex justify-between items-center px-8 docked full-width top-0 h-16 bg-[#131313]/80 backdrop-blur-xl border-b border-[#414754]/15">
         <div className="flex items-center gap-6">
           <h1 className="font-headline font-bold text-lg text-on-surface tracking-tight">
             Karya Warna
@@ -32,7 +35,7 @@ function Dashboard() {
               search
             </span>
             <input
-              className="bg-surface-container-low border-none text-xs pl-10 pr-4 py-2 w-64 focus:ring-1 focus:ring-primary rounded-sm transition-all"
+              className="bg-surface-container-low border-none text-xs pl-14 pr-4 py-2 w-64 focus:ring-1 focus:ring-primary rounded-sm transition-all"
               placeholder="Global Search..."
               type="text"
             />
@@ -65,7 +68,7 @@ function Dashboard() {
       </header>
 
       {/*<!-- Main Content Canvas -->*/}
-      <main className="ml-20 pt-20 p-8 min-h-screen">
+      <main className="ml-20 peer-hover:ml-64 transition-all duration-300 pt-20 p-8 min-h-screen">
         {/*<!-- Top Row: Quick Stats -->*/}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {/*<!-- Today's Revenue -->*/}
